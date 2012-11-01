@@ -6,7 +6,7 @@ Distributed encrypted backups between peers.
 First things first: what to expect
 ===================================
 This is a learning project. My goal is to learn about cryptography, communications and filesystems. It may take really long before any part of the code is minimally useful.
-Due to the nature of the project, i'm afraid source code is going to have to be rewritten many times as i learn and change my mind about what's a sensible solution. Let's call it an evolutive project. (Evolutive as in 'i don't have a clue about what's it going to look like a week from now')
+Due to the nature of the project, i'm afraid source code is going to have to be rewritten many times as i learn and change my mind about what's a sensible solution. Let's call it an evolutive project. (Evolutive as in 'i don't have a clue about what it's going to look like a week from now')
 In order to make the process less painful tools that improve performance are going to be needed, so i have chosen to write it in Go (Golang) and use Git as control version system.
 
 Ok, ok, so... what's this about?
