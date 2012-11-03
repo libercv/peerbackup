@@ -1,4 +1,4 @@
-//	This file is part of Peerbackup
+//  This file is part of Peerbackup
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -13,8 +13,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-// TODO: use static variables for the config file name and token names.
-
 package main
 
 import (
@@ -25,16 +23,24 @@ import (
 	"strings"
 )
 
-// config contains configuration of the program
-type config struct {
-	srcDir, dstDir string
+const (
+	configFileName = "config.txt"
+	srcDirToken    = "src"
+	dstDirToken    = "dst"
+	separatorChar  = "="
+)
+
+// Config contains configuration of the program
+type Config struct {
+	SrcDir string // Source directory of the backup
+	DstDir string // Destination directory of the backup
 }
 
 // ReadConfig reads the configuration file and returns it in the form
 // of a "config" struct
-func ReadConfig() config {
-	var conf config
-	file, err := os.Open("config.txt")
+func ReadConfig() Config {
+	var conf Config
+	file, err := os.Open(configFileName)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -58,12 +64,12 @@ func ReadConfig() config {
 
 // parseConfigLine parses a string containing a line of the configuration
 // file extracting its information and filling a variable of the "config" struct
-func parseConfigLine(line string, conf *config) {
-	tokens := strings.Split(line, "=")
+func parseConfigLine(line string, conf *Config) {
+	tokens := strings.Split(line, separatorChar)
 	switch tokens[0] {
-	case "src":
-		conf.srcDir = tokens[1]
-	case "dst":
-		conf.dstDir = tokens[1]
+	case srcDirToken:
+		conf.SrcDir = tokens[1]
+	case dstDirToken:
+		conf.DstDir = tokens[1]
 	}
 }
