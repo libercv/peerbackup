@@ -66,10 +66,10 @@ func ReadConfig() Config {
 // file extracting its information and filling a variable of the "config" struct
 func parseConfigLine(line string, conf *Config) {
 	tokens := strings.Split(line, separatorChar)
-	switch tokens[0] {
+	switch strings.TrimSpace(tokens[0]) {
 	case srcDirToken:
-		conf.SrcDir = tokens[1]
+		conf.SrcDir = strings.TrimSpace(tokens[1])
 	case dstDirToken:
-		conf.DstDir = tokens[1]
+		conf.DstDir = strings.TrimSpace(tokens[1])
 	}
 }
