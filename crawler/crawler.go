@@ -115,6 +115,7 @@ func entryCopy(dstName, srcName string, fi os.FileInfo) (written int64, err erro
 		fmt.Printf("Copied %s\n", dstName)
 	}
 
+	os.Chtimes(dstName, fi.ModTime(), fi.ModTime())
 	return written, err
 }
 
