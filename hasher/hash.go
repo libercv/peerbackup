@@ -47,4 +47,31 @@ func GetFileSHA256(name string) ([]byte) {
 	return h.Sum(nil)
 }
 
+func GetFileAdler32(name string) uint32 {
+	fi, err := os.Open(name)
+	if err != nil {
+		panic(err)
+	}
+	defer func() {
+		if err := fi.Close(); err != nil {
+			panic(err)
+		}
+	}()
+
+	r := bufio.NewReader(fi)
+	buf := make([]byte, 262144)
+	h:=NewRollingAdler32()
+	for {
+		n, err := r.Read(buf)
+		if err != nil && err != io.EOF {
+			panic(err)
+		}
+		if n == 0 {
+			break
+		}
+		h.Write(buf)
+	}
+	return h.Sum32()
+}
+
 
