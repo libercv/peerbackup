@@ -1,2 +1,2 @@
 src =/home/liber/gocode/src/github.com/libercv/peerbackup
-dst=  /home/liber/backup
+dst=  /home/liber/lab/backup

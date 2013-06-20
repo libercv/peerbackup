@@ -24,17 +24,34 @@ import (
 
 // entry contains information about the file
 // or directory
-type entry struct {
-	name string
+type Entry struct {
+	Name string
 	info os.FileInfo
 }
 
 // We create channels of communication between coroutines
 var (
-	chSrc = make(chan entry)
-	chDst = make(chan entry)
+	chSrc = make(chan Entry)
+	chDst = make(chan Entry)
+	chOutput chan Entry
 )
 
+func WalkDir(rootSrc string)  (chan Entry) {
+	chOutput =  make (chan Entry)
+	go walkDirAsync(rootSrc)
+	return chOutput
+}
+
+func walkDirAsync(rootSrc string) {
+	filepath.Walk(rootSrc, visitFile)
+	close(chOutput)
+}
+
+func visitFile(path string, f os.FileInfo, err error) error {
+	// TODO: Handle errors
+	chOutput <- Entry{path, f}
+	return nil
+}
 
 // SyncDir synchronizes two directories
 func SyncDir(rootSrc string, rootDst string, rm_deleted bool) {
@@ -45,32 +62,32 @@ func SyncDir(rootSrc string, rootDst string, rm_deleted bool) {
 	dst, ok := <-chDst
 	for src := range chSrc {
 		// Name of the destination file to be copied/created
-		fileDst := filepath.Join(rootDst, src.name[lenSrc:])
+		fileDst := filepath.Join(rootDst, src.Name[lenSrc:])
 		if ok {
 		// We still have destination files to check
 			if rm_deleted {
 			// Check for files to be deleted
-				for src.name[lenSrc:] > dst.name[lenDst:] {
-					os.Remove(dst.name)
-					fmt.Printf("Erased %s \n", dst.name)
+				for src.Name[lenSrc:] > dst.Name[lenDst:] {
+					os.Remove(dst.Name)
+					fmt.Printf("Erased %s \n", dst.Name)
 					dst, ok = <-chDst
 				}
 			}
-			if  src.name[lenSrc:] == dst.name[lenDst:] {
+			if  src.Name[lenSrc:] == dst.Name[lenDst:] {
 				// File exists in both dirs. Copy only if
 				// newer version exists
 				if src.info.ModTime().After(dst.info.ModTime()) {
-					entryCopy(fileDst, src.name, src.info)
+					entryCopy(fileDst, src.Name, src.info)
 				}
 				dst, ok = <-chDst
-			} else if src.name[lenSrc:] < dst.name[lenDst:] {
+			} else if src.Name[lenSrc:] < dst.Name[lenDst:] {
 				// Copy a new file
-				entryCopy(fileDst, src.name, src.info)
+				entryCopy(fileDst, src.Name, src.info)
 			}
 		} else  { // !ok
 			// No more files in the destination directory. 
 			// Copy a new file
-			entryCopy(fileDst, src.name, src.info)
+			entryCopy(fileDst, src.Name, src.info)
 		}
 	}
 }
@@ -89,13 +106,13 @@ func walkDst(path string) {
 
 func visitSrc(path string, f os.FileInfo, err error) error {
 	// TODO: Handle errors
-	chSrc <- entry{path, f}
+	chSrc <- Entry{path, f}
 	return nil
 }
 
 func visitDst(path string, f os.FileInfo, err error) error {
 	// TODO: Handle erros
-	chDst <- entry{path, f}
+	chDst <- Entry{path, f}
 	return nil
 }
 
