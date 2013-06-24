@@ -19,6 +19,7 @@ func main() {
 		fmt.Printf("%s - %s", f.Path, f.FileInfo.Name())
 		if !f.FileInfo.IsDir() {
 			fmt.Printf("  %x   %d", f.CryptHash, f.AdlerHash)
+			f.BackupFile(config.DstDir)
 		}
 		fmt.Printf("\n")
 	}
