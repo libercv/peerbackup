@@ -33,21 +33,30 @@ type Config struct {
 	DstDir string // Destination directory of the backup
 }
 
+// WriteJSONConfig writes configuration to a JSON file
 func WriteJSONConfig(conf *Config) {
 	file, err := os.Create(settingsFile)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer file.Close()
-	cadena, _ := json.MarshalIndent(conf, "", "  ")
+	cadena, err := json.MarshalIndent(conf, "", "  ")
+	if err != nil {
+		log.Fatal(err)
+	}
 	file.Write(cadena)
 	file.WriteString("\n")
 }
 
+// ReadJSONConfig reads settings from a JSON file and
+// unmarshals it to a Config structure.
 func ReadJSONConfig() Config {
 	var conf Config
-	archivo, _ := ioutil.ReadFile(settingsFile)
-	err := json.Unmarshal(archivo, &conf)
+	archivo, err := ioutil.ReadFile(settingsFile)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = json.Unmarshal(archivo, &conf)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
