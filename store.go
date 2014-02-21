@@ -1,9 +1,9 @@
 package main
 
 import (
-	"os"
 	"code.google.com/p/lzma"
 	"compress/gzip"
+	"os"
 )
 
 func WriteFileLZMA(filename string, buf []byte) {

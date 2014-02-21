@@ -1,25 +1,24 @@
 package main
 
 import (
-	"os"
-	"fmt"
 	"bufio"
-	"path"
-	"io"
 	"container/list"
+	"fmt"
 	"github.com/libercv/peerbackup/hasher"
+	"io"
+	"os"
+	"path"
 	"path/filepath"
 )
 
 type FileMetadata struct {
-	FileInfo os.FileInfo
-	Path string
+	FileInfo  os.FileInfo
+	Path      string
 	CryptHash []byte
 	AdlerHash uint32
-	// List of hash fragments 
+	// List of hash fragments
 	Fragments list.List
 }
-
 
 type FileBlock struct {
 	CryptHash []byte
@@ -29,24 +28,23 @@ type FileBlock struct {
 func GetFileInfo(fileName string) *FileMetadata {
 	m := new(FileMetadata)
 
-	fi, _:=os.Stat(fileName)
-	m.FileInfo=fi
+	fi, _ := os.Stat(fileName)
+	m.FileInfo = fi
 
-	m.Path=filepath.Dir(fileName)
+	m.Path = filepath.Dir(fileName)
 
 	// Inefficient way of calculating the hashes
-	// Multiwriter should be better. 
+	// Multiwriter should be better.
 	if !fi.IsDir() {
-		m.CryptHash=hasher.GetFileSHA256(fileName)
-		m.AdlerHash=hasher.GetFileAdler32(fileName)
+		m.CryptHash = hasher.GetFileSHA256(fileName)
+		m.AdlerHash = hasher.GetFileAdler32(fileName)
 	}
 
 	// Again, use multiwriter, not parse thrice every file...
-	block:=new(FileBlock)
+	block := new(FileBlock)
 	m.Fragments.PushBack(block)
 	return m
 }
-
 
 func (fm *FileMetadata) BackupFile(dstFolder string) {
 
@@ -72,7 +70,7 @@ func (fm *FileMetadata) BackupFile(dstFolder string) {
 		if n == 0 {
 			break
 		}
-		hash:=hasher.GetSHA256(buf)
+		hash := hasher.GetSHA256(buf)
 		WriteFileGZIP(path.Join(dstFolder, fmt.Sprintf("%x", hash)), buf)
 	}
 }

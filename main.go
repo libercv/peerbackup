@@ -8,12 +8,15 @@ import (
 	//"io"
 	//"os"
 	//"github.com/libercv/peerbackup/hasher"
-	"github.com/libercv/peerbackup/crawler"
+	//"github.com/libercv/peerbackup/crawler"
 )
 
 func main() {
 	fmt.Println("Peer backup")
-	config := ReadConfig()
+	config := ReadJSONConfig()
+	fmt.Printf("%s \n", config.DstDir)
+	//WriteJSONConfig(&config)
+	/*
 	ch := crawler.WalkDir(config.SrcDir)
 	for src := range ch {
 		f := GetFileInfo(src.Name)
@@ -24,5 +27,5 @@ func main() {
 		}
 		fmt.Printf("\n")
 	}
-
+	*/
 }

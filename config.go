@@ -16,18 +16,15 @@
 package main
 
 import (
-	"bufio"
-	"io"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
-	"strings"
 )
 
 const (
-	configFileName = "config.txt"
-	srcDirToken    = "src"
-	dstDirToken    = "dst"
-	separatorChar  = "="
+	settingsFile = "settings.json"
 )
 
 // Config contains configuration of the program
@@ -36,40 +33,23 @@ type Config struct {
 	DstDir string // Destination directory of the backup
 }
 
-// ReadConfig reads the configuration file and returns it in the form
-// of a "config" struct
-func ReadConfig() Config {
-	var conf Config
-	file, err := os.Open(configFileName)
+func WriteJSONConfig(conf *Config) {
+	file, err := os.Create(settingsFile)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer file.Close()
-	reader := bufio.NewReader(file)
-	for {
-		line, isPrefix, err := reader.ReadLine()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			log.Fatal(err)
-		}
-		if isPrefix {
-			log.Fatal("Error: Unexpected long line reading", file.Name())
-		}
-		parseConfigLine(string(line), &conf)
-	}
-	return conf
+	cadena, _ := json.MarshalIndent(conf, "", "  ")
+	file.Write(cadena)
+	file.WriteString("\n")
 }
 
-// parseConfigLine parses a string containing a line of the configuration
-// file extracting its information and filling a variable of the "config" struct
-func parseConfigLine(line string, conf *Config) {
-	tokens := strings.Split(line, separatorChar)
-	switch strings.TrimSpace(tokens[0]) {
-	case srcDirToken:
-		conf.SrcDir = strings.TrimSpace(tokens[1])
-	case dstDirToken:
-		conf.DstDir = strings.TrimSpace(tokens[1])
+func ReadJSONConfig() Config {
+	var conf Config
+	archivo, _ := ioutil.ReadFile(settingsFile)
+	err := json.Unmarshal(archivo, &conf)
+	if err != nil {
+		fmt.Println("error:", err)
 	}
+	return conf
 }
