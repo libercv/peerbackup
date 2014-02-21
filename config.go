@@ -40,11 +40,11 @@ func WriteJSONConfig(conf *Config) {
 		log.Fatal(err)
 	}
 	defer file.Close()
-	cadena, err := json.MarshalIndent(conf, "", "  ")
+	str, err := json.MarshalIndent(conf, "", "  ")
 	if err != nil {
 		log.Fatal(err)
 	}
-	file.Write(cadena)
+	file.Write(str)
 	file.WriteString("\n")
 }
 
@@ -52,11 +52,11 @@ func WriteJSONConfig(conf *Config) {
 // unmarshals it to a Config structure.
 func ReadJSONConfig() Config {
 	var conf Config
-	archivo, err := ioutil.ReadFile(settingsFile)
+	file, err := ioutil.ReadFile(settingsFile)
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = json.Unmarshal(archivo, &conf)
+	err = json.Unmarshal(file, &conf)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
