@@ -17,7 +17,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -58,7 +57,7 @@ func ReadJSONConfig() Config {
 	}
 	err = json.Unmarshal(file, &conf)
 	if err != nil {
-		fmt.Println("error:", err)
+		log.Fatal(err)
 	}
 	return conf
 }
