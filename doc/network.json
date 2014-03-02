@@ -1,0 +1,19 @@
+{
+    "groups": [
+        {
+            "group-id": "family",
+            "peers": [
+                {
+                    "hash": "hash1",
+                    "name": "parents",
+                    "ipv4": "12.34.56.78"
+                },
+                {
+                    "hash": "hash1",
+                    "name": "sister",
+                    "ipv4": "13.57.24.68"
+                }
+            ]
+        }
+    ]
+}

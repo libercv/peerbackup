@@ -1,0 +1,14 @@
+{
+    "version": "1",
+    "groups": [
+        {
+            "id": "family",
+            "salt": "pepper",
+            "routes": [
+                "/home/user1/folder1",
+                "/home/user1/folder2/subfolder",
+                "/home/user1/folder4/file.txt"
+            ]
+        }
+    ]
+}
