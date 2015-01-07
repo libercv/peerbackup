@@ -1,3 +1,5 @@
+01/07/2015 - This project is officially dead. I haven't got the time to work on it and it doesn't look like this will change in the foreseeable future. 
+
 peerbackup
 ==========
 
